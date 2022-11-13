@@ -62,7 +62,7 @@ export default function UserProfile({ mainContract, account }) {
     setLoading(false);
   };
 
-  const addTags = useCallback(() => {}, [tag]);
+  const addTags = useCallback(() => { }, [tag]);
 
   useEffect(() => {
     getOtherData();
@@ -123,7 +123,7 @@ export default function UserProfile({ mainContract, account }) {
             <div className="card">
               <div className="card-inner-div">
                 <div className="card-inner-content">
-                  <p>{about}Hello</p>
+                  <p>{about ? about : "Add your description from the edit profile button"}</p>
                 </div>
               </div>
             </div>

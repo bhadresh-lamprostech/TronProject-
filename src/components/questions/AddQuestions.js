@@ -82,7 +82,7 @@ const AddQuestions = ({ mainContract, account }) => {
       },
       data: {
         name: "'" + StringTitle + "'",
-        description: "'" + editorRef.current.getContent() + "'",
+        description: "'" + [editorRef.current.getContent()] + "'",
         file_url: "'" + Stringtags + "'",
 
       }
