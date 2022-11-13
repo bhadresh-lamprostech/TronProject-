@@ -2,12 +2,50 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Cookies from "universal-cookie";
 import "../styles/Navbar/navbar.scss";
-import logo from '../components/stackchain.png'
+import logo from "../components/stackchain.png";
+import Popup from "./popup";
 const Navbar = ({ setOpenWalletOption }) => {
   const cookie = new Cookies();
   const [address, setAddress] = useState(cookie.get("account"));
   const location = useLocation();
   const [isNavExpanded, setIsNavExpanded] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState();
+
+  const networks = {
+    bittorrent: {
+      chainId: `0x${Number(1029).toString(16)}`,
+      chainName: "BitTorrent Chain Donau",
+      nativeCurrency: {
+        name: "BTT",
+        symbol: "BTT",
+        decimals: 18,
+      },
+      rpcUrls: ["https://pre-rpc.bt.io/"],
+      blockExplorerUrls: ["https://testscan.bt.io"],
+    },
+  };
+
+  const changeNetwork = async ({ networkName, setError }) => {
+    try {
+      if (!window.ethereum) throw new Error("No crypto wallet found");
+      await window.ethereum.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            ...networks[networkName],
+          },
+        ],
+      });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleNetworkSwitch = async (networkName) => {
+    setError();
+    await changeNetwork({ networkName, setError });
+  };
 
   useEffect(() => {
     const addr = cookie.get("account");
@@ -20,12 +58,21 @@ const Navbar = ({ setOpenWalletOption }) => {
     console.log(location.pathname);
   }, [location]);
 
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const [newButton, setNewButton] = useState({ hidden: false });
+  const onReClick = () => {
+    setNewButton({ hidden: true });
+  };
+
   return (
     <>
       <div className="navbar-main">
         <div className="navbar-left">
           <div className="navbar-logo">
-            <img className="nav-logo" src={logo}/>
+            <img className="nav-logo" src={logo} />
           </div>
         </div>
         <div className="navbar-middle">
@@ -112,6 +159,44 @@ const Navbar = ({ setOpenWalletOption }) => {
                 </button>
               </li>
             )}
+            <li>
+              <button className="connect-btn-i" onClick={togglePopup}>
+                i
+              </button>
+              {isOpen && (
+                <Popup
+                  content={
+                    <>
+                      <div className="popup-div">
+                        You need to connect with the BTTC Chain. If you are not
+                        connected please connect using the button given below
+                        and add BTTC Chain to Your Wallet.
+                        <div>
+                          <p
+                            className="popup-text"
+                            onClick={() =>
+                              window.open("https://testfaucet.bt.io/#/")
+                            }
+                          >
+                            Click for BTTC Faucet
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        className="popup-btn"
+                        onClick={() => {
+                          onReClick();
+                          handleNetworkSwitch("bittorrent");
+                        }}
+                      >
+                        Add BTTC Chain and Connect
+                      </button>
+                    </>
+                  }
+                  handleClose={togglePopup}
+                />
+              )}
+            </li>
           </ul>
           <button
             className="hamburger"

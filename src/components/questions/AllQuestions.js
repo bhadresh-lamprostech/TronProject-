@@ -23,16 +23,18 @@ function AllQuestions({ account, mainContract }) {
       console.log(ans_num);
       const address = question.user;
       const cid = await mainContract.getUserCID(address);
-      var url = "";
-      if (question.q_cid.substring(0, 4) === "ipfs") {
-        url = "https://ipfs.io/ipfs/" + question.q_cid.substring(7);
-      }
-      else {
-        url = "https://ipfs.io/ipfs/" + question.q_cid;
-      }
+      var urls = question.q_cid.substring(7);
+      var url = "https://ipfs.io/ipfs/" + urls;
+      console.log(urls)
+      // if (question.q_cid.substring(0, 4) === "ipfs") {
+      //   url = "https://ipfs.io/ipfs/" + question.q_cid.substring(7);
+      // }
+      // else {
+      //   url = "https://ipfs.io/ipfs/" + question.q_cid;
+      // }
       await Axios.get(url).then((response) => {
         console.log(response.data);
-        content.push([title, response.data.body, voted, ans_num, cid, i]);
+        content.push([title, response.data.description, voted, ans_num, cid, i]);
         // setLoading(false);
       });
 

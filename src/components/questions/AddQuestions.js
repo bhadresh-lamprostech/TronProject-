@@ -7,6 +7,8 @@ import membericon from "./group.png";
 import staticon from "./stats.png";
 import Sidebar from "./Sidebar";
 import axios from "axios";
+import { Web3Storage } from "web3.storage";
+import { data } from "autoprefixer";
 
 const KeyCodes = {
   comma: 188,
@@ -51,6 +53,25 @@ const AddQuestions = ({ mainContract, account }) => {
     console.log("'" + editorRef.current.getContent() + "'");
 
 
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    // const client = new Web3Storage({ token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDllOTgwOTYxRDc1M0QwNUEzODlDZUU1RThCRjA5NjI3QzkwYzQ2RTIiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjgxOTEzODY1MzksIm5hbWUiOiJjbGFzc2ljX2Nob3JkcyJ9.TKUEsNlcVJQvImOVlnZqCYEQPsjZb3RmXgSAR5D9vng" })
+
+    // const metadata = {
+    //   "description": "asdasd",
+    //   "image": "https://ipfs.io/ipfs/",
+    //   "name": "name",
+    // }
+    // const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' })
+    // const metadata_cid = await client.put([blob], {
+    //   name: "_metadata",
+    //   maxRetries: 3,
+    // })
+    // console.log(metadata_cid);
+    // var questionCID;
+
+
+
     //------------------------------------------------------------------------------------------------------------------//
     const options = {
       method: 'POST',
@@ -63,7 +84,7 @@ const AddQuestions = ({ mainContract, account }) => {
         name: "'" + StringTitle + "'",
         description: "'" + editorRef.current.getContent() + "'",
         file_url: "'" + Stringtags + "'",
-        body: "'" + question + "'"
+
       }
     };
     var questionCID;

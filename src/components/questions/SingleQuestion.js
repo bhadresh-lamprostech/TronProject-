@@ -8,6 +8,7 @@ import staticon from "./stats.png";
 import "./singlequestion.scss";
 import { useLocation } from "react-router";
 import Sidebar from "./Sidebar";
+import axios from "axios";
 
 export default function SingleQuestion({ account, mainContract, id }) {
   const editorRef = useRef(0);
@@ -15,10 +16,33 @@ export default function SingleQuestion({ account, mainContract, id }) {
   const id_q = location.state.que_id;
   console.log(id_q);
   const submitAnswer = async () => {
-    const client = create("https://ipfs.infura.io:5001/api/v0");
-    const { cid } = await client.add([editorRef.current.getContent()]);
-    // console.log(cid._baseCache.get("z"));
-    const answer_cid = cid._baseCache.get("z");
+    var cid;
+    // // const client = create("https://ipfs.infura.io:5001/api/v0");
+    // const { cid } = await client.add([editorRef.current.getContent()]);
+    // // console.log(cid._baseCache.get("z"));
+    const options = {
+      method: 'POST',
+      url: 'https://api.nftport.xyz/v0/metadata',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: '4455109c-4819-40f5-9ec5-5882af32a7ed'
+      },
+      data: {
+        name: "'" + "" + "'",
+        description: "'" + [editorRef.current.getContent()] + "'",
+        file_url: "'" + "" + "'",
+
+      }
+    };
+    var questionCID;
+    await axios.request(options).then(function (response) {
+      console.log(response.data.metadata_uri);
+      cid = response.data.metadata_uri;
+    }).catch(function (error) {
+      console.error(error);
+    });
+
+    const answer_cid = cid;
     const question = await mainContract.getQuestion(id_q);
     const tx = await mainContract.addAnswer(question.q_id, answer_cid);
     await tx.wait();
@@ -40,10 +64,12 @@ export default function SingleQuestion({ account, mainContract, id }) {
     const question = await mainContract.getQuestion(id_q);
     setTitle(question.q_title);
     // console.log(question.q_cid);
-    const url = "https://ipfs.io/ipfs/" + question.q_cid;
+    // const url = "https://ipfs.io/ipfs/" + question.q_cid;
+    var urls = question.q_cid.substring(7);
+    var url = "https://ipfs.io/ipfs/" + urls;
     await Axios.get(url).then((response) => {
-      // console.log(response.data.body);
-      setContent(response.data.body);
+      console.log(response.data.description);
+      setContent(response.data.description);
       // setLoading(false);
     });
 
@@ -96,13 +122,22 @@ export default function SingleQuestion({ account, mainContract, id }) {
       let noAnswers = userInfoStruct.noOfAnswers;
       noAnswers = parseInt(noAnswers._hex, 16);
 
+
+
+      //------------------------------------------------------------------------------------------------------------------//
+
+      //------------------------------------------------------------------------------------------------------------------//
+
       const ans_cid = answerinfo.a_cid;
-      const ans_url = "https://ipfs.io/ipfs/" + ans_cid;
-      console.log(ans_url);
+      // const ans_url = "https://ipfs.io/ipfs/" + ans_cid;
+      // console.log(ans_url);
+      var ans_urls = answerinfo.a_cid.substring(7);
+      var ans_url = "https://ipfs.io/ipfs/" + ans_urls;
+      console.log(ans_url)
       await Axios.get(ans_url).then((response) => {
         console.log(response.data);
         a_content.push([
-          response.data,
+          response.data.description,
           user_cid,
           name,
           score,
