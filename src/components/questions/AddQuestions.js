@@ -9,6 +9,8 @@ import Sidebar from "./Sidebar";
 import axios from "axios";
 import { Web3Storage } from "web3.storage";
 import { data } from "autoprefixer";
+import AddLoading from "./AddLoading";
+import { useNavigate } from "react-router";
 
 const KeyCodes = {
   comma: 188,
@@ -20,6 +22,9 @@ const AddQuestions = ({ mainContract, account }) => {
   const [Question, setQuestion] = useState("");
   const editorRef = useRef(null);
   const [title, setTitle] = useState("");
+  const [fetching, setFetching] = useState(false);
+  const navigate = useNavigate();
+
   const log = () => {
     if (editorRef.current) {
       console.log(editorRef.current.getContent());
@@ -31,13 +36,13 @@ const AddQuestions = ({ mainContract, account }) => {
     console.log(tag);
   };
   async function Datastoring() {
+    setFetching(true);
     if (editorRef.current) {
       console.log(title);
       console.log(editorRef.current.getContent());
       setQuestion(editorRef.current.getContent());
       console.log(Question);
     }
-
 
     //nft storage
     // const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -48,10 +53,8 @@ const AddQuestions = ({ mainContract, account }) => {
       name: StringTitle,
       description: editorRef.current.getContent(),
       file_url: Stringtags,
-
     };
-    console.log("'" + editorRef.current.getContent() + "'");
-
+    console.log("" + editorRef.current.getContent() + "");
 
     //--------------------------------------------------------------------------------------------------------------------//
 
@@ -70,30 +73,32 @@ const AddQuestions = ({ mainContract, account }) => {
     // console.log(metadata_cid);
     // var questionCID;
 
-
-
     //------------------------------------------------------------------------------------------------------------------//
     const options = {
-      method: 'POST',
-      url: 'https://api.nftport.xyz/v0/metadata',
+      method: "POST",
+      url: "https://api.nftport.xyz/v0/metadata",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: '4455109c-4819-40f5-9ec5-5882af32a7ed'
+        "Content-Type": "application/json",
+        Authorization: "4455109c-4819-40f5-9ec5-5882af32a7ed",
       },
       data: {
         name: "'" + StringTitle + "'",
-        description: "'" + [editorRef.current.getContent()] + "'",
+        description: "" + [editorRef.current.getContent()] + "",
         file_url: "'" + Stringtags + "'",
-
-      }
+      },
     };
     var questionCID;
-    await axios.request(options).then(function (response) {
-      console.log(response.data.metadata_uri);
-      questionCID = response.data.metadata_uri;
-    }).catch(function (error) {
-      console.error(error);
-    });
+    await axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data.metadata_uri);
+        questionCID = response.data.metadata_uri;
+      })
+      .catch(function (error) {
+        console.error(error);
+        console.log(error);
+        // setFetching(false);
+      });
 
     //------------------------------------------------------------------------------------------------------------------//
 
@@ -107,6 +112,8 @@ const AddQuestions = ({ mainContract, account }) => {
 
     const tx = await mainContract.addQuestion(title, questionCID, questionTags);
     await tx.wait();
+    setFetching(false);
+    navigate("/find-question");
     console.log(tx);
   }
 
@@ -169,7 +176,7 @@ const AddQuestions = ({ mainContract, account }) => {
                 <Editor
                   apiKey=""
                   onInit={(evt, editor) => (editorRef.current = editor)}
-                  initialValue="<p>This is the initial content of the editor.</p>"
+                  initialValue="This is the initial content of the editor."
                   init={{
                     height: 500,
                     menubar: true,
@@ -223,15 +230,15 @@ const AddQuestions = ({ mainContract, account }) => {
                     content_style:
                       "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                   }}
-                // tinymce.init({
-                //     selector: 'textarea',  // change this value according to your HTML
-                //     plugins: 'image',
-                //     toolbar: 'image',
-                //     image_list: [
-                //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
-                //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
-                //     ]
-                //   });
+                  // tinymce.init({
+                  //     selector: 'textarea',  // change this value according to your HTML
+                  //     plugins: 'image',
+                  //     toolbar: 'image',
+                  //     image_list: [
+                  //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
+                  //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
+                  //     ]
+                  //   });
                 />
               </div>
             </div>
@@ -258,6 +265,11 @@ const AddQuestions = ({ mainContract, account }) => {
         </div>
         <Sidebar mainContract={mainContract} />
       </div>
+      {fetching ? (
+        <div className="add-load">
+          <AddLoading />
+        </div>
+      ) : null}
     </>
   );
 };

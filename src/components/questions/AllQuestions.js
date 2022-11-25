@@ -25,7 +25,7 @@ function AllQuestions({ account, mainContract }) {
       const cid = await mainContract.getUserCID(address);
       var urls = question.q_cid.substring(7);
       var url = "https://ipfs.io/ipfs/" + urls;
-      console.log(urls)
+      console.log(urls);
       // if (question.q_cid.substring(0, 4) === "ipfs") {
       //   url = "https://ipfs.io/ipfs/" + question.q_cid.substring(7);
       // }
@@ -34,7 +34,16 @@ function AllQuestions({ account, mainContract }) {
       // }
       await Axios.get(url).then((response) => {
         console.log(response.data);
-        content.push([title, response.data.description, voted, ans_num, cid, i]);
+        const description = response.data.description.replace(/<p>/g, " ");
+        console.log(description);
+        content.push([
+          title,
+          response.data.description,
+          voted,
+          ans_num,
+          cid,
+          i,
+        ]);
         // setLoading(false);
       });
 
@@ -109,7 +118,7 @@ function AllQuestions({ account, mainContract }) {
                 >
                   <h3>{inde[0]}</h3>
                 </Link>
-                {inde[1]}
+                <div dangerouslySetInnerHTML={{ __html: inde[1] }} />
               </div>
             </div>
           </div>

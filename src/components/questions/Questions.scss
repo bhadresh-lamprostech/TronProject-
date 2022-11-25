@@ -104,6 +104,13 @@
   text-align: center;
 }
 
+.add-load {
+  position: fixed;
+  top: 0 !important;
+  z-index: 10;
+  background-color: #ffffff72;
+}
+
 //tag style
 
 /* Example Styles for React Tags*/
@@ -243,6 +250,16 @@
   width: 100%;
   border: #aaa 1px solid;
   margin-right: 5px;
+}
+.single-tag {
+  width: auto;
+  border: rgb(0, 0, 0) 1px solid;
+  margin: 5px;
+  padding: 5px;
+  background-color: #005edd;
+  color: #ffffff;
+  border-radius: 10px;
+  text-align: center;
 }
 .vote-option {
   margin-top: 10px;

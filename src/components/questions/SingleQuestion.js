@@ -21,26 +21,28 @@ export default function SingleQuestion({ account, mainContract, id }) {
     // const { cid } = await client.add([editorRef.current.getContent()]);
     // // console.log(cid._baseCache.get("z"));
     const options = {
-      method: 'POST',
-      url: 'https://api.nftport.xyz/v0/metadata',
+      method: "POST",
+      url: "https://api.nftport.xyz/v0/metadata",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: '4455109c-4819-40f5-9ec5-5882af32a7ed'
+        "Content-Type": "application/json",
+        Authorization: "4455109c-4819-40f5-9ec5-5882af32a7ed",
       },
       data: {
         name: "'" + "" + "'",
         description: "'" + [editorRef.current.getContent()] + "'",
         file_url: "'" + "" + "'",
-
-      }
+      },
     };
     var questionCID;
-    await axios.request(options).then(function (response) {
-      console.log(response.data.metadata_uri);
-      cid = response.data.metadata_uri;
-    }).catch(function (error) {
-      console.error(error);
-    });
+    await axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data.metadata_uri);
+        cid = response.data.metadata_uri;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
 
     const answer_cid = cid;
     const question = await mainContract.getQuestion(id_q);
@@ -122,8 +124,6 @@ export default function SingleQuestion({ account, mainContract, id }) {
       let noAnswers = userInfoStruct.noOfAnswers;
       noAnswers = parseInt(noAnswers._hex, 16);
 
-
-
       //------------------------------------------------------------------------------------------------------------------//
 
       //------------------------------------------------------------------------------------------------------------------//
@@ -133,7 +133,7 @@ export default function SingleQuestion({ account, mainContract, id }) {
       // console.log(ans_url);
       var ans_urls = answerinfo.a_cid.substring(7);
       var ans_url = "https://ipfs.io/ipfs/" + ans_urls;
-      console.log(ans_url)
+      console.log(ans_url);
       await Axios.get(ans_url).then((response) => {
         console.log(response.data);
         a_content.push([
@@ -351,15 +351,15 @@ export default function SingleQuestion({ account, mainContract, id }) {
                     content_style:
                       "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                   }}
-                // tinymce.init({
-                //     selector: 'textarea',  // change this value according to your HTML
-                //     plugins: 'image',
-                //     toolbar: 'image',
-                //     image_list: [
-                //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
-                //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
-                //     ]
-                //   });
+                  // tinymce.init({
+                  //     selector: 'textarea',  // change this value according to your HTML
+                  //     plugins: 'image',
+                  //     toolbar: 'image',
+                  //     image_list: [
+                  //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
+                  //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
+                  //     ]
+                  //   });
                 />
               </div>
 
@@ -386,6 +386,7 @@ export default function SingleQuestion({ account, mainContract, id }) {
       <>
         <div className="main">
           <div className="left-section">
+            <div className="Answer-heading">Question</div>
             <div className="single_Question">{title}</div>
             <div className="single_Question_description">
               <div dangerouslySetInnerHTML={{ __html: content }} />
@@ -395,7 +396,7 @@ export default function SingleQuestion({ account, mainContract, id }) {
                 <div className="left-side">
                   <div className="tags">
                     {src.map((inde) => {
-                      return <div className="tag">{inde}</div>;
+                      return <div className="single-tag">{inde}</div>;
                     })}
                   </div>
 
@@ -404,6 +405,7 @@ export default function SingleQuestion({ account, mainContract, id }) {
                       <div className="upvote">
                         <Arrow />
                       </div>
+                      <div className="vote-num">1</div>
                       <div className="downvote">
                         <Arrow />
                       </div>
@@ -510,15 +512,15 @@ export default function SingleQuestion({ account, mainContract, id }) {
                     content_style:
                       "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                   }}
-                // tinymce.init({
-                //     selector: 'textarea',  // change this value according to your HTML
-                //     plugins: 'image',
-                //     toolbar: 'image',
-                //     image_list: [
-                //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
-                //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
-                //     ]
-                //   });
+                  // tinymce.init({
+                  //     selector: 'textarea',  // change this value according to your HTML
+                  //     plugins: 'image',
+                  //     toolbar: 'image',
+                  //     image_list: [
+                  //       { title: 'My image 1', value: 'https://www.example.com/my1.gif' },
+                  //       { title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif' }
+                  //     ]
+                  //   });
                 />
               </div>
 

@@ -10,6 +10,8 @@ import staticon from "./stats.png";
 import { connect } from "@tableland/sdk";
 import Sidebar from "./Sidebar";
 import axios from "axios";
+import AddLoading from "./AddLoading";
+import { useNavigate } from "react-router";
 // import { url } from 'inspector';
 // import { url } from 'inspector';
 
@@ -22,6 +24,8 @@ const AddArticle = ({ mainContract }) => {
   const editorRef = useRef(null);
   const [title, setTitle] = useState("");
   const [tags, setTags] = useState([]);
+  const [fetching, setFetching] = useState(false);
+  const navigate = useNavigate();
   const handleAddition = (tag) => {
     setTags([...tags, tag]);
     console.log(tag);
@@ -37,13 +41,16 @@ const AddArticle = ({ mainContract }) => {
   const [heroImg, setHeroImage] = useState(null);
 
   async function DataStoring() {
+    setFetching(true);
+    // setFetching(false);
+    //   navigate("/info");
     if (editorRef.current) {
       console.log(title);
     }
     console.log(editorRef.current.getContent());
 
     //nft storage
-    const client = create("https://ipfs.infura.io:5001/api/v0");
+    // const client = create("https://ipfs.infura.io:5001/api/v0");
     const StringTitle = JSON.stringify(title);
     const Stringtags = JSON.stringify(tags);
     const question = {
@@ -54,29 +61,31 @@ const AddArticle = ({ mainContract }) => {
 
     //------------------------------------------------------------------------------------------------------------------//
     const options = {
-      method: 'POST',
-      url: 'https://api.nftport.xyz/v0/metadata',
+      method: "POST",
+      url: "https://api.nftport.xyz/v0/metadata",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: '4455109c-4819-40f5-9ec5-5882af32a7ed'
+        "Content-Type": "application/json",
+        Authorization: "4455109c-4819-40f5-9ec5-5882af32a7ed",
       },
       data: {
         name: "'" + StringTitle + "'",
         description: "'" + editorRef.current.getContent() + "'",
         file_url: "'" + Stringtags + "'",
-        bhadresh: 'developer'
-      }
+        bhadresh: "developer",
+      },
     };
-    await axios.request(options).then(function (response) {
-      console.log(response.data);
-      // console.log(response.data.ipfs_url);
-      // imageUri = response.data.ipfs_url;
-    }).catch(function (error) {
-      console.error(error);
-    });
+    await axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        // console.log(response.data.ipfs_url);
+        // imageUri = response.data.ipfs_url;
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
 
     //------------------------------------------------------------------------------------------------------------------//
-
 
     // const { cid } = await client.add(JSON.stringify(question));
     // const articleCID = cid._baseCache.get("z");
@@ -119,7 +128,7 @@ const AddArticle = ({ mainContract }) => {
 
     try {
       const added = await client.add(file);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `https://ipfs.io/ipfs/${added.path}`;
       setUploadedImage(url);
       console.log(url);
       console.log(uploadImage);
@@ -289,6 +298,11 @@ const AddArticle = ({ mainContract }) => {
         </div>
         <Sidebar mainContract={mainContract} />
       </div>
+      {fetching ? (
+        <div className="add-load">
+          <AddLoading />
+        </div>
+      ) : null}
     </>
   );
 };

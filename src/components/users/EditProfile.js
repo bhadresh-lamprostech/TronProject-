@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import Upload from "../users/man.png";
 import { create, CID } from "ipfs-http-client";
 import axios from "axios";
+import AddLoading from "../questions/AddLoading";
+import { useNavigate } from "react-router";
 export default function EditProfile({
   mainContract,
   account,
@@ -21,6 +23,9 @@ export default function EditProfile({
   };
   const delimiters = [KeyCodes.comma, KeyCodes.enter];
   const [tags, setTags] = useState([]);
+  // const [fetching, setFetching] = useState(false);
+  // const navigate = useNavigate();
+
   // console.log(UserTag);
 
   const handleAddition = (tag) => {
@@ -49,6 +54,7 @@ export default function EditProfile({
   const [designationOfUser, setDesignationOfUser] = useState(designation);
   const [aboutOfUser, setAboutOfUser] = useState(about);
   const getUserDetails = async (e) => {
+    // setFetching(true);
     const tagList = [];
     for (let i = 0; i < tags.length; i++) {
       tagList[i] = tags[i].text;
@@ -64,6 +70,8 @@ export default function EditProfile({
       tagList
     );
     await tx.wait();
+    // setFetching(false);
+    // navigate("/profile");
   };
 
   //upload image function
@@ -80,7 +88,6 @@ export default function EditProfile({
     //   console.log("Error uploading file: ", error);
     // }
 
-
     //---------------------------------------------------------------------------------------------------------------------------//
     e.preventDefault();
     const nftImage = e.target.files[0];
@@ -96,33 +103,29 @@ export default function EditProfile({
     form.append("file", nftImage);
 
     const options = {
-      method: 'POST',
-      url: 'https://api.nftport.xyz/v0/files',
+      method: "POST",
+      url: "https://api.nftport.xyz/v0/files",
       headers: {
-        'Content-Type': 'multipart/form-data; boundary=---011000010111000001101001',
-        Authorization: '4455109c-4819-40f5-9ec5-5882af32a7ed'
+        "Content-Type":
+          "multipart/form-data; boundary=---011000010111000001101001",
+        Authorization: "4455109c-4819-40f5-9ec5-5882af32a7ed",
       },
-      data: form
+      data: form,
     };
     console.log(options);
 
-    await axios.request(options).then(function (response) {
-      console.log(response.data);
-      console.log(response.data.ipfs_url);
+    await axios
+      .request(options)
+      .then(function (response) {
+        console.log(response.data);
+        console.log(response.data.ipfs_url);
 
-
-      setProfile_image_url(response.data.ipfs_url);
-    }).catch(function (error) {
-      console.error(error);
-    });
+        setProfile_image_url(response.data.ipfs_url);
+      })
+      .catch(function (error) {
+        console.error(error);
+      });
     //--------------------------------------------------------------------------------------------//
-
-
-
-
-
-
-
   }
 
   return (
@@ -254,6 +257,11 @@ export default function EditProfile({
           </div>
         </div>
       </div>
+      {/* {fetching ? (
+        <div className="add-load">
+          <AddLoading />
+        </div>
+      ) : null} */}
     </>
   );
 }
